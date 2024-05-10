@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Avito AAA</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" >
+  </head>
+  <body>
+    <nav class="navbar bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/static/avito.svg" />
+        </a>
+      </div>
+    </nav>
+
+    {% if not error and not image %}
+    <h1 class="display-1 text-center mo-4">Привет, пользователь!</h1>
+    {% endif %}
+
+    {% if error %}
+    <div class="container col-8">
+      <div class="alert alert-danger" role="alert">
+        <p class="h3"> {{ error_type }}</p>
+        <p>{{ error }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if image %}
+    <div class="container text-center mb-3 col-8">
+      <img class="img-fluid rounded-3" src="{{ image }}" width=500px>
+    </div>
+    {% endif %}
+
+    <div class="container mb-3 col-8">
+      <form class="border border-2 p-3 rounded-4" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Вставьте изображение в формате .jpg
+            для распознавания текста</label>
+          <input class="form-control" type="file" id="formFile" name="image">
+        </div>
+        <div class="mb-3">
+          <label for="thresh" class="form-label">Введите порог точности в процентах, меньше 
+            которого результаты отображаться не будут</label>
+          <input class="form-control" type="number" id="thresh" name="threshold" min="0" max="99" value="0">
+        </div>
+        <button type="submit" class="btn btn-primary">Распознать</button>
+      </form>
+    </div>
+
+    <div class="container col-8">
+      {% if words %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Изображение</th>
+            <th scope="col">Слово</th>
+            <th scope="col">Точность</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for word in words %}
+          <tr>
+            <td><img src="{{ word.image }}"/></td>
+            <td>{{ word.word }}</td>
+            <td class="{% if word.accuracy > 0.90 %}
+                      table-success
+                      {% elif word.accuracy > 0.70 %}
+                      table-warning
+                      {% else %}
+                      table-danger
+                      {% endif %}
+                      "
+            >
+            {{ "%2.2f" | format(word.accuracy*100) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+
+    <footer class="container mt-5">
+        <p class="text-center text-muted">© 2024 Академия Аналитиков Авито</p>
+    </footer>
+    <script src="static/js/bootstrap.bundle.min.js" ></script>
+  </body>
+</html>
