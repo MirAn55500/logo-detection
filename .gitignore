@@ -8,3 +8,9 @@ logo/
 # weights
 *.pt
 *.pth
+*.pkl
+
+#files
+*.zip
+*.txt
+*.png
