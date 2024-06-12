@@ -1,3 +1,7 @@
+import os
+import torch
+from torchvision import transforms
+from sklearn.metrics.pairwise import cosine_similarity
 from io import BufferedReader, BytesIO
 from base64 import b64encode
 from typing import List, Tuple
@@ -12,6 +16,44 @@ Box = Tuple[int, int, int, int]  # PIL format
 
 def open_image(image_fp: BufferedReader) -> Image:
     return Image.open(image_fp)
+
+# Define image preprocessing transformations
+preprocess = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+])
+
+# Function to load and preprocess an image
+def load_and_preprocess_image(image):
+    img_tensor = preprocess(image)
+    img_tensor = img_tensor.unsqueeze(0)  # Add batch dimension
+    return img_tensor
+
+# Function to extract features from an image
+def extract_features(image, model, device):
+    img_tensor = load_and_preprocess_image(image).to(device)
+    with torch.no_grad():
+        features = model(img_tensor)
+    return features.squeeze().cpu().numpy()
+
+# Function to find the closest image and its label
+def find_closest_image_and_label(cropped_image, image_features, data_folder, model, device):
+    input_features = extract_features(cropped_image, model, device)
+    similarities = {}
+    for file_name, features in image_features.items():
+        similarity = cosine_similarity([input_features], [features])[0][0]
+        similarities[file_name] = similarity
+    
+    if not similarities:
+        raise ValueError("No similarities found. Ensure that image features are correctly extracted.")
+    
+    closest_image = max(similarities, key=similarities.get)
+    label_file = os.path.splitext(closest_image)[0] + '.txt'
+    with open(os.path.join(data_folder, label_file), 'r') as f:
+        label = f.read().strip()
+    return closest_image, label
 
 
 class PolygonDrawer:
