@@ -13,6 +13,9 @@ lib = Path("lib")
 
 def create_app() -> Application:
     app = Application()
+
+    app['config'] = Config
+    
     # setup routes
     app.router.add_static("/static/", lib / "static")
     app.router.add_view("/", views.IndexView, name="index")
