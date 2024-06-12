@@ -2,9 +2,6 @@ venv
 __pycache__
 lib/templates/backup.html
 
-# tmp venv
-logo/
-
 # weights
 *.pt
 *.pth
