@@ -9,6 +9,6 @@ lib/templates/backup.html
 
 #files
 *.zip
-*.txt
-*.png
+# *.txt
+# *.png
 *.jpg
