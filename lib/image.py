@@ -65,7 +65,7 @@ class PolygonDrawer:
     @staticmethod
     def coords_to_box(coords: Coords) -> Box:
         """Convert EasyOCR coords to PIL box format"""
-        return coords[0][0], coords[0][1], coords[2][0], coords[2][1]
+        return coords[0], coords[1], coords[2], coords[3]
 
     def highlight_word(self, coords: Coords, word: str) -> None:
         """Add polygon at given coords and add word"""

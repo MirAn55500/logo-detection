@@ -3,7 +3,7 @@ import torch
 from PIL import Image
 from ultralytics import YOLO
 
-from lib.image import find_closest_image_and_label, open_image
+from lib.image import PolygonDrawer, find_closest_image_and_label, image_to_img_src
 from lib.models import load_yolo_model, load_resnet_model
 from config import Config
 
@@ -16,27 +16,35 @@ def main():
     input_image_path = '/home/ammironov.ext/logo-detection/data_folder/3m2_cropped_0.png'
     image = Image.open(input_image_path)
 
+    draw = PolygonDrawer(image)
+
     # Detect objects using YOLO
     results = yolo_model(image)
     labels = []
 
     for result in results:
         for box in result.boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            cropped_img = image.crop((x1, y1, x2, y2))
+            # Unpack bounding box coordinates
+            x1, y1, x2, y2 = map(int, box.xyxy[0])  # Adjust if necessary based on your bounding box structure
+            cropped_img = draw.crop((x1, y1, x2, y2))
             
             # Find the closest image and its label for the cropped image
             closest_image, label = find_closest_image_and_label(
                 cropped_img, image_features, Config.DATA_FOLDER, feature_model, torch.device("cuda" if torch.cuda.is_available() else "cpu")
             )
-
-            # Append the closest image and its label to the list
+            
+            # Append the result to the labels list
             labels.append({"closest_image": closest_image, "label": label})
-    
-    # Print the results
-    print("Detected Labels and Closest Images:")
-    for item in labels:
-        print(f"Label: {item['label']}, Closest Image: {item['closest_image']}")
+
+            # Optionally save or display the cropped image
+            cropped_img_b64 = image_to_img_src(cropped_img)
+            print(f"Cropped Image Base64: {cropped_img_b64}")
+            print(f"Label: {label}")
+
+    # Display or save the final processed image with highlighted boxes
+    processed_image_path = 'processed_image.jpg'
+    draw.get_highlighted_image().save(processed_image_path)
+    print(f"Processed image saved to {processed_image_path}")
 
 if __name__ == '__main__':
     main()
