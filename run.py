@@ -1,5 +1,5 @@
 from aiohttp.web import run_app
-from lib.app import create_app
+from app import create_app
 
 
 def main() -> None:
