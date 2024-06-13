@@ -15,7 +15,7 @@
       </div>
     </nav>
 
-    {% if not error and not labels %}
+    {% if not error and not items %}
     <h1 class="display-1 text-center mt-4">Привет, пользователь!</h1>
     {% endif %}
 
@@ -39,19 +39,21 @@
     </div>
 
     <div class="container col-8">
-      {% if labels %}
+      {% if items %}
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">Изображение</th>
+            <th scope="col">Обрезанное изображение</th>
             <th scope="col">Метка</th>
+            <th scope="col">Ближайшее похожее изображение</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in labels %}
+          {% for item in items %}
           <tr>
-            <td><img src="{{ item.image }}" class="img-thumbnail" /></td>
+            <td><img src="{{ item.cropped_image }}" class="img-thumbnail" /></td>
             <td>{{ item.label }}</td>
+            <td><img src="{{ item.closest_image }}" class="img-thumbnail" /></td>
           </tr>
           {% endfor %}
         </tbody>
