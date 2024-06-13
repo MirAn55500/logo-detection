@@ -11,3 +11,4 @@ lib/templates/backup.html
 *.zip
 *.txt
 *.png
+*.jpg
