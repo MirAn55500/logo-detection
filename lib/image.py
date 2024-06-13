@@ -10,8 +10,8 @@ from PIL import Image
 from PIL.ImageDraw import Draw
 
 
-Coords = List[List[int]]  # EasyOCR format
-Box = Tuple[int, int, int, int]  # PIL format
+Coords = List[int]  # Coordinates for the bounding box (x1, y1, x2, y2)
+Box = Tuple[int, int, int, int]  # Box format for PIL (left, top, right, bottom)
 
 
 def open_image(image_fp: BufferedReader) -> Image:
@@ -64,16 +64,21 @@ class PolygonDrawer:
 
     @staticmethod
     def coords_to_box(coords: Coords) -> Box:
-        """Convert EasyOCR coords to PIL box format"""
+        """Convert coordinates to PIL box format"""
         return coords[0], coords[1], coords[2], coords[3]
 
     def highlight_word(self, coords: Coords, word: str) -> None:
         """Add polygon at given coords and add word"""
         box = self.coords_to_box(coords)
-        self._draw.rectangle(box, outline="red")
+        self._draw.rectangle(box, outline="red", width=2)
         text_height = 12  # px, hardcoded
         x, y = box[:2]
         self._draw.text((x, y - text_height), word, fill="red")
+
+    def highlight_box(self, coords: Coords) -> None:
+        """Highlight the box and add a label above it"""
+        x1, y1, x2, y2 = coords
+        self._draw.rectangle([x1, y1, x2, y2], outline="red", width=2)
 
     def crop(self, coords: Coords) -> Image:
         """Get cropped Image part"""

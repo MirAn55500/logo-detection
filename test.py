@@ -33,6 +33,9 @@ def main():
                 cropped_img, image_features, Config.DATA_FOLDER, feature_model, torch.device("cuda" if torch.cuda.is_available() else "cpu")
             )
             
+            # Highlight the detected box with label
+            draw.highlight_box((x1, y1, x2, y2))
+            
             # Append the result to the labels list
             labels.append({"closest_image": closest_image, "label": label})
 
