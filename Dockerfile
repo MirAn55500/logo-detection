@@ -1,20 +1,16 @@
-FROM python:3.12-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# RUN python -m pip install --upgrade pip
-RUN mkdir /app
-
-COPY ./requirements.txt ./requirements-dev.txt /app
+# Dockerfile
+FROM python:3.8-slim
 
 WORKDIR /app
 
-RUN python -m pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
+# Скопируем только файлы зависимостей
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
-# pre download model
-RUN python -c "import easyocr; easyocr.Reader(['en'])"
-
-COPY . /app
+# Скопируем исходный код в контейнер
+COPY . .
 
 EXPOSE 8080
-CMD ["python", "run.py"]
+
+CMD ["python3", "app.py"]
+
