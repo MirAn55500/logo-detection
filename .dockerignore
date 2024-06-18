@@ -1,0 +1,6 @@
+data_folder/*
+weights/*
+*.log
+*.tmp
+__pycache__/
+.venv/
