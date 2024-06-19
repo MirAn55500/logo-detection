@@ -1,18 +1,22 @@
-# Dockerfile
 FROM python:3.8-slim
+
+# Установка необходимых зависимостей для OpenCV
+RUN apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 WORKDIR /app
 
-# Обновляем pip до последней версии
+# Обновление pip
 RUN pip install --upgrade pip
 
-# Скопируем только файлы зависимостей, пока хз зачем на 2 req
+# Копируем и устанавливаем зависимости
 COPY requirements.txt requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
-# Скопируем исходный код в контейнер
+# Копируем весь исходный код
 COPY . .
 
+# Открываем порт для приложения
 EXPOSE 8080
 
+# Команда для запуска приложения
 CMD ["python3", "app.py"]
