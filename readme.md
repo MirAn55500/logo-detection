@@ -20,10 +20,33 @@ AAA Logo-detection Application
 
 Цели: см. purpose.md
 
-Требования
-==========
+Описание: см. solution_scheme.md
 
-Для работы сервиса используется Docker.
+Подготовка к запуску
+=======
+
+1. **Склонировать репозиторий**:
+
+    ```bash
+    git clone <URL_репозитория>
+    ```
+
+2. **Загрузить веса и предобработанные картинки в папку `weights`**:
+
+    - `best.pt` — веса YOLOv5.
+    - `resnet50_feature_extractor.pth` — веса ResNet50.
+    - `image_features.pkl` — предобработанные признаки изображений.
+
+    Структура директории должна быть:
+
+    ```
+    logo-detection/
+    ├── weights/
+    │   ├── best.pt
+    │   ├── resnet50_feature_extractor.pth
+    │   └── image_features.pkl
+    ```
+
 
 Установка
 =========
