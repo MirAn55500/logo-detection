@@ -29,7 +29,7 @@ run: build
 # Команда для запуска тестов
 test: build
 	@echo 'Running tests...'
-	@docker run --rm -v $(pwd):/app -i ${IMAGE} \
+	@docker run --rm -v $(shell pwd):/app -i ${IMAGE} \
 		/bin/sh -c "PYTHONPATH=. pytest --disable-warnings -v tests/test_integration.py"
 
 # Команды для линтинга кода
