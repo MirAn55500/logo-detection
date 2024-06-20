@@ -2,17 +2,21 @@ from pathlib import Path
 
 import aiohttp_jinja2
 import jinja2
+from aiohttp import web
 from aiohttp.web import Application
 
+from config import Config
 from lib import views
-from lib.models import create_model
-
+from lib.models import load_resnet_model, load_yolo_model
 
 lib = Path("lib")
 
 
 def create_app() -> Application:
     app = Application()
+
+    app["config"] = Config
+
     # setup routes
     app.router.add_static("/static/", lib / "static")
     app.router.add_view("/", views.IndexView, name="index")
@@ -21,9 +25,20 @@ def create_app() -> Application:
         app=app,
         loader=jinja2.FileSystemLoader(lib / "templates"),
     )
-    app["model"] = create_model()
+
+    # Load models
+    app["yolo_model"] = load_yolo_model(Config.YOLO_MODEL_PATH)
+    app["feature_model"], app["image_features"] = load_resnet_model(
+        Config.RESNET_MODEL_PATH, Config.FEATURES_PATH
+    )
+
     return app
 
 
 async def async_create_app() -> Application:
     return create_app()
+
+
+if __name__ == "__main__":
+    app = create_app()
+    web.run_app(app, host="0.0.0.0", port=8080)

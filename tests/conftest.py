@@ -1,12 +1,13 @@
-import pytest
-from aiohttp.test_utils import TestClient, TestServer
+import os
+import sys
 
-from lib.app import create_app
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import pytest
+
+from app import create_app
 
 
 @pytest.fixture
-async def client() -> TestClient:
+async def client(aiohttp_client):
     app = create_app()
-    async with TestServer(app) as server:
-        async with TestClient(server) as client:
-            yield client
+    return await aiohttp_client(app)

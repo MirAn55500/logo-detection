@@ -1,20 +1,25 @@
-FROM python:3.12-slim
+FROM python:3.8-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# RUN python -m pip install --upgrade pip
-RUN mkdir /app
-
-COPY ./requirements.txt ./requirements-dev.txt /app
+# Установка необходимых зависимостей для OpenCV
+RUN apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
 
 WORKDIR /app
 
-RUN python -m pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
+# Обновление pip
+RUN pip install --upgrade pip
 
-# pre download model
-RUN python -c "import easyocr; easyocr.Reader(['en'])"
+# Копируем и устанавливаем зависимости
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
-COPY . /app
+# Устанавливаем линтеры и форматировщики
+RUN pip install black flake8 pycodestyle pylint
 
+# Копируем весь исходный код
+COPY . .
+
+# Открываем порт для приложения
 EXPOSE 8080
-CMD ["python", "run.py"]
+
+# Команда для запуска приложения
+CMD ["python3", "app.py"]
