@@ -20,6 +20,8 @@ AAA Logo-detection Application
 
 Цели: см. purpose.md
 
+Описание: см. solution_scheme.md
+
 Требования
 ==========
 
