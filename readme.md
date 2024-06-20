@@ -68,7 +68,7 @@ AAA Logo-detection Application
 Тестирование
 ============
 
-Для запуска тестов::
+Для запуска тестов:
 
     make test
 
