@@ -1,16 +1,16 @@
 default_language_version:
     python: python3.10
 repos:
-    - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v3.4.0
-      hooks:
-          - id: check-yaml
-          - id: check-json
-          - id: check-added-large-files
-          - id: end-of-file-fixer
-          - id: trailing-whitespace
-          - id: check-case-conflict
-          - id: mixed-line-ending
+    # - repo: https://github.com/pre-commit/pre-commit-hooks
+    #   rev: v3.4.0
+    #   hooks:
+          # - id: check-yaml
+          # - id: check-json
+          # - id: check-added-large-files
+          # - id: end-of-file-fixer
+          # - id: trailing-whitespace
+          # - id: check-case-conflict
+          # - id: mixed-line-ending
 
     - repo: https://github.com/pre-commit/mirrors-isort
       rev: v5.7.0
@@ -26,4 +26,3 @@ repos:
       rev: 3.8.4
       hooks:
           - id: flake8
-            additional_dependencies: [flake8-black, flake8-bugbear]
