@@ -6,4 +6,8 @@ tqdm
 matplotlib
 scikit-learn
 Pillow
-
+aiohttp
+aiohttp-jinja2
+ultralytics
+pytest
+pytest-aiohttp

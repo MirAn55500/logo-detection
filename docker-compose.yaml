@@ -12,4 +12,3 @@ services:
       - ./data_folder:/app/data_folder  # Монтируем каталог с данными
     environment:
       - MODEL_PATH=/app/weights
-

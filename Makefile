@@ -1,53 +1,79 @@
-IMAGE:=aaa-frontend
+# Название Docker образа
+IMAGE:=logo-detection-app
 
+# Общие команды
 help:
 	@echo "help - show this help"
 	@echo "build - build docker image"
 	@echo "test - run tests"
-	@echo "lint - run lining"
-	@echo "run - start applicaion"
-	@echo "dev - start applicaion in dev mode with live reload"
+	@echo "lint - run linting"
+	@echo "run - start application"
+	@echo "dev - start application in dev mode with live reload"
 
+# Команда для очистки Docker образа
 clean:
 	@docker rmi -f ${IMAGE}
 
+# Команда для сборки Docker образа
 build:
 	@docker build -t ${IMAGE} . --network=host
 
+# Команда для запуска приложения в режиме разработки с live reload
 dev: build
-	@echo 'Run dev server with live reload- refer to dev server address.'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app \
-		-p 0.0.0.0:8000:8000 \
-		-p 0.0.0.0:8001:8001 \
+	@echo 'Running dev server with live reload...'
+	@docker run --rm \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-p 8080:8080 \
 		-it ${IMAGE} \
-		adev runserver --livereload --host 0.0.0.0 --port 8000 run.py
+		adev runserver --livereload --host 0.0.0.0 --port 8080
 
+# Команда для запуска приложения в обычном режиме
 run: build
-	@docker run --rm -it -p 0.0.0.0:8000:8000 ${IMAGE}
+	@docker run --rm -it \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-p 8080:8080 \
+		${IMAGE}
 
+# Команда для запуска тестов
 test: build
-	@echo 'Run tests'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app -i ${IMAGE} \
-		python -m pytest --disable-warnings -v
+	@echo 'Running tests...'
+	@docker run --rm -v $(pwd):/app -i logo-detection-app \
+		/bin/sh -c "PYTHONPATH=. pytest --disable-warnings -v tests/test_integration.py
 
+# Команды для линтинга кода
 flake8: build
-	@echo 'Run flake8'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app -i ${IMAGE} \
+	@echo 'Running flake8...'
+	@docker run --rm \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-it ${IMAGE} \
 		python -m flake8 lib
 
 pycodestyle: build
-	@echo 'Run pycodestyle'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app -i ${IMAGE} \
+	@echo 'Running pycodestyle...'
+	@docker run --rm \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-it ${IMAGE} \
 		python -m pycodestyle lib
 
 pylint: build
-	@echo 'Run pylint'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app -i ${IMAGE} \
+	@echo 'Running pylint...'
+	@docker run --rm \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-it ${IMAGE} \
 		python -m pylint lib
 
 black: build
-	@echo 'Run black'
-	@docker run --rm -v E:/авито_файлы/Инфраструктура/aaa-frontend-app/app -i ${IMAGE} \
+	@echo 'Running black...'
+	@docker run --rm \
+		-v $(shell pwd)/weights:/app/weights \
+		-v $(shell pwd)/data_folder:/app/data_folder \
+		-it ${IMAGE} \
 		python -m black lib
 
+# Команда для запуска всех линтеров
 lint: black flake8 pycodestyle pylint
