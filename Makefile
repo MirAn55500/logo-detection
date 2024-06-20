@@ -8,7 +8,6 @@ help:
 	@echo "test - run tests"
 	@echo "lint - run linting"
 	@echo "run - start application"
-	@echo "dev - start application in dev mode with live reload"
 
 # Команда для очистки Docker образа
 clean:
@@ -17,16 +16,6 @@ clean:
 # Команда для сборки Docker образа
 build:
 	@docker build -t ${IMAGE} . --network=host
-
-# Команда для запуска приложения в режиме разработки с live reload
-dev: build
-	@echo 'Running dev server with live reload...'
-	@docker run --rm \
-		-v $(shell pwd)/weights:/app/weights \
-		-v $(shell pwd)/data_folder:/app/data_folder \
-		-p 8080:8080 \
-		-it ${IMAGE} \
-		adev runserver --livereload --host 0.0.0.0 --port 8080
 
 # Команда для запуска приложения в обычном режиме
 run: build
@@ -39,8 +28,8 @@ run: build
 # Команда для запуска тестов
 test: build
 	@echo 'Running tests...'
-	@docker run --rm -v $(pwd):/app -i logo-detection-app \
-		/bin/sh -c "PYTHONPATH=. pytest --disable-warnings -v tests/test_integration.py
+	@docker run --rm -v $(pwd):/app -i ${IMAGE} \
+		/bin/sh -c "PYTHONPATH=. pytest --disable-warnings -v tests/test_integration.py"
 
 # Команды для линтинга кода
 flake8: build

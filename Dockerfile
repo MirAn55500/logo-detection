@@ -12,6 +12,9 @@ RUN pip install --upgrade pip
 COPY requirements.txt requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
+# Устанавливаем линтеры и форматировщики
+RUN pip install black flake8 pycodestyle pylint
+
 # Копируем весь исходный код
 COPY . .
 
