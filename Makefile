@@ -5,9 +5,10 @@ IMAGE:=logo-detection-app
 help:
 	@echo "help - show this help"
 	@echo "build - build docker image"
-	@echo "test - run tests"
-	@echo "lint - run linting"
 	@echo "run - start application"
+	@echo "lint - run linting"
+	@echo "test - run tests"
+	@echo "clean - remove docker image"
 
 # Команда для очистки Docker образа
 clean:
